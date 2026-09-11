@@ -4,26 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ad Killer</title>
+<link rel='icon' href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚫</text></svg>">
 <style>
-:root{--bg:#0d0d10;--card:#16161c;--line:#26262e;--ink:#eef0f5;--dim:#9aa0ae;--accent:#e8d44d;--bad:#e05e4a}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 18px;user-select:none;overflow:hidden}
-h1{font-size:26px;letter-spacing:8px;color:var(--accent);text-shadow:0 0 22px rgba(232,212,77,.25)}
-.sub{color:var(--dim);font-size:11px;letter-spacing:2.5px;margin-top:6px;text-transform:uppercase}
-#field{position:relative;width:min(640px,96vw);height:400px;margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:crosshair}
-.ad{position:absolute;background:#f5f5f0;color:#222;border-radius:8px;padding:8px 10px;font-size:11px;font-family:Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer;transition:transform .1s}
-.ad .x{position:absolute;top:2px;right:5px;font-weight:700;cursor:pointer;color:#888;font-size:12px}
-.ad b{display:block;font-size:12px;color:#0057b8}
-#hud{font-size:12.5px;color:var(--dim);letter-spacing:1.5px;text-align:center;line-height:2}
-#hud b{color:var(--accent)}
-#msg{margin-top:8px;font-size:12px;color:var(--dim);letter-spacing:1px;min-height:18px}
+body{background:#e7e5e0;color:#1f2430;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:34px 18px;user-select:none}
+.wordmark{font-size:13px;font-weight:700;letter-spacing:.14em;color:#6b6f76}
+.sub{color:#8a8f98;font-size:12px;margin-top:6px}
+.window{width:min(680px,96vw);margin-top:20px;background:#fff;border:1px solid #d9d7d2;border-radius:10px;overflow:hidden;box-shadow:0 18px 44px rgba(31,36,48,.12)}
+.titlebar{display:flex;align-items:center;gap:6px;background:#f5f4f1;border-bottom:1px solid #e0ded9;padding:9px 12px}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.titlebar .tb-title{margin:0 auto;font-size:12px;color:#7a7e85;transform:translateX(-21px)}
+#field{position:relative;height:400px;background:#fff;overflow:hidden;cursor:crosshair}
+.ad{position:absolute;background:#fff;color:#3a4152;border:1px solid #dcd9d3;border-radius:8px;padding:9px 11px 8px;font-size:11px;line-height:1.45;box-shadow:0 6px 18px rgba(31,36,48,.14);cursor:pointer;transition:transform .1s}
+.ad .x{position:absolute;top:4px;right:4px;width:16px;height:16px;border-radius:50%;background:#f0efec;color:#7a7e85;font-size:10px;font-weight:700;line-height:16px;text-align:center;cursor:pointer}
+.ad .x:hover{background:#e05252;color:#fff}
+.ad b{display:block;font-size:12px;font-weight:600;color:#1f2430;padding-right:16px}
+.statusbar{display:flex;justify-content:center;background:#f5f4f1;border-top:1px solid #e0ded9;padding:8px 12px;font-size:11px;color:#7a7e85;letter-spacing:.02em}
+.statusbar b{color:#1f2430;font-weight:600;padding:0 2px}
+#msg{margin-top:12px;font-size:12px;color:#8a8f98;min-height:18px;font-style:italic}
 </style>
 </head>
 <body>
-<h1>AD KILLER</h1>
+<div class="wordmark">AD KILLER</div>
 <div class="sub">close every popup &middot; click the X, not the ad</div>
-<div id="field"></div>
-<div id="hud">ADS CLOSED <b id="kills">0</b> &middot; ACCIDENTAL CLICKS <b id="oops">0</b> &middot; SANITY <b id="sanity">100</b>%</div>
+<div class="window">
+  <div class="titlebar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="tb-title">the open web, cleansed</span></div>
+  <div id="field"></div>
+  <div class="statusbar" id="hud">ADS CLOSED <b id="kills">0</b> &nbsp;&middot;&nbsp; ACCIDENTAL CLICKS <b id="oops">0</b> &nbsp;&middot;&nbsp; SANITY <b id="sanity">100</b>%</div>
+</div>
 <div id="msg">hitting the ad body opens it. only the X closes it.</div>
 <script>
 const field=$('field');
