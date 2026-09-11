@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ad Killer</title>
+<style>
+:root{--bg:#0d0d10;--card:#16161c;--line:#26262e;--ink:#eef0f5;--dim:#9aa0ae;--accent:#e8d44d;--bad:#e05e4a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:26px 18px;user-select:none;overflow:hidden}
+h1{font-size:26px;letter-spacing:8px;color:var(--accent);text-shadow:0 0 22px rgba(232,212,77,.25)}
+.sub{color:var(--dim);font-size:11px;letter-spacing:2.5px;margin-top:6px;text-transform:uppercase}
+#field{position:relative;width:min(640px,96vw);height:400px;margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:crosshair}
+.ad{position:absolute;background:#f5f5f0;color:#222;border-radius:8px;padding:8px 10px;font-size:11px;font-family:Arial,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer;transition:transform .1s}
+.ad .x{position:absolute;top:2px;right:5px;font-weight:700;cursor:pointer;color:#888;font-size:12px}
+.ad b{display:block;font-size:12px;color:#0057b8}
+#hud{font-size:12.5px;color:var(--dim);letter-spacing:1.5px;text-align:center;line-height:2}
+#hud b{color:var(--accent)}
+#msg{margin-top:8px;font-size:12px;color:var(--dim);letter-spacing:1px;min-height:18px}
+</style>
+</head>
+<body>
+<h1>AD KILLER</h1>
+<div class="sub">close every popup &middot; click the X, not the ad</div>
+<div id="field"></div>
+<div id="hud">ADS CLOSED <b id="kills">0</b> &middot; ACCIDENTAL CLICKS <b id="oops">0</b> &middot; SANITY <b id="sanity">100</b>%</div>
+<div id="msg">hitting the ad body opens it. only the X closes it.</div>
+<script>
+const field=$('field');
+function $(id){return document.getElementById(id);}
+const ADS=[
+["DOCTORS HATE HIM","Local man discovers one weird trick"],
+["HOT SINGLES","In your area. Somehow. Always."],
+["CONGRATULATIONS!","You are the 1,000,000th visitor"],
+["YOUR PC IS SLOW","Download SpeedMax Pro Ultra"],
+["LOSE 30 LBS","With this ancient tallow secret"],
+["FREE IPHONE","Just answer 400 surveys"],
+["CRYPTO MOON","Invest now. Trust us."],
+["EXTEND WARRANTY","Your car's warranty is crying"]
+];
+let kills=0,oops=0,sanity=100;
+function spawn(){
+  if(sanity<=0)return;
+  const a=ADS[Math.floor(Math.random()*ADS.length)];
+  const el=document.createElement('div');el.className='ad';
+  el.style.left=(10+Math.random()*(field.clientWidth-190))+'px';
+  el.style.top=(10+Math.random()*(field.clientHeight-90))+'px';
+  el.style.width=(140+Math.random()*60)+'px';
+  el.innerHTML='<span class="x">X</span><b>'+a[0]+'</b>'+a[1];
+  el.querySelector('.x').onclick=e=>{
+    e.stopPropagation();
+    kills++;$('kills').textContent=kills;
+    el.style.transform='scale(0)';setTimeout(()=>el.remove(),120);
+    sanity=Math.min(100,sanity+2);$('sanity').textContent=sanity;
+    if(kills%10===0)$('msg').textContent=kills+' ads closed. the internet briefly heals.';
+  };
+  el.onclick=e=>{
+    e.stopPropagation();
+    oops++;$('oops').textContent=oops;
+    sanity=Math.max(0,sanity-15);$('sanity').textContent=sanity;
+    $('msg').textContent='you clicked the ad. it opens 3 more tabs in your soul.';
+    spawn();spawn();
+    if(sanity<=0){field.innerHTML='';$('msg').textContent='SANITY DEPLETED. The ads win. Score: '+kills+' closed, '+oops+' clicked. Refresh to fight again.';clearInterval(iv);clearInterval(dr);}
+  };
+  field.appendChild(el);
+}
+const iv=setInterval(spawn,900);
+const dr=setInterval(()=>{sanity=Math.max(0,sanity-1);$('sanity').textContent=sanity;
+  if(sanity<=0){field.innerHTML='';$('msg').textContent='SANITY DEPLETED. Score: '+kills+' closed, '+oops+' clicked. Refresh to fight again.';clearInterval(iv);clearInterval(dr);}
+},1000);
+spawn();spawn();spawn();
+</script>
+</body>
+</html>
